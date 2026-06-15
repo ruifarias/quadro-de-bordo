@@ -1,11 +1,19 @@
 from fastapi import APIRouter
 import sys
 import os
+from pathlib import Path
 
-zapp_path = os.path.join(os.path.dirname(__file__), '..', '..', 'zapp_planeamento_pagamentos', 'backend')
-sys.path.insert(0, zapp_path)
+script_dir = Path(__file__).parent.parent.parent.parent
+zapp_path = str(script_dir / 'zapp_planeamento_pagamentos' / 'backend')
 
-import db
+if zapp_path not in sys.path:
+    sys.path.insert(0, zapp_path)
+
+try:
+    import db
+except ImportError as e:
+    print(f"Erro ao importar db. Tentando de {zapp_path}")
+    raise
 
 router = APIRouter()
 
