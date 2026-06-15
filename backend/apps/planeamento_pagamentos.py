@@ -19,21 +19,54 @@ router = APIRouter()
 
 @router.get("/lista")
 async def get_pagamentos_lista():
+    """Retorna lista completa de pagamentos organizados por semana"""
     data = db.get_resumo_pagamentos()
-    return data
+
+    # Separar fornecedores por tipo
+    codigosDebitoDirecto = ['0243', '0303', '0308', '1009', '1028', '1035', '1114']
+
+    pagamentos = data["pagamentos"]
+
+    fornecedoresTransferenciaComDivida = {}
+    fornecedoresTransferenciaComCredito = {}
+    fornecedoresDebito = {}
+
+    for codigo, dados in pagamentos.items():
+        ulticos4 = codigo.split(".")[-1]
+        total_divida = dados.get("total_divida", 0)
+
+        if ulticos4 in codigosDebitoDirecto:
+            fornecedoresDebito[codigo] = dados
+        elif total_divida >= 0:
+            fornecedoresTransferenciaComDivida[codigo] = dados
+        else:
+            fornecedoresTransferenciaComCredito[codigo] = dados
+
+    return {
+        "pagamentos": pagamentos,
+        "fornecedoresTransferenciaComDivida": fornecedoresTransferenciaComDivida,
+        "fornecedoresDebito": fornecedoresDebito,
+        "fornecedoresTransferenciaComCredito": fornecedoresTransferenciaComCredito,
+        "totais_semanas": data["totais_semanas"],
+        "wednesdays": data["wednesdays"],
+        "semanas": data.get("semanas", [])
+    }
 
 @router.get("/resumo")
 async def get_pagamentos_resumo():
+    """Retorna resumo dos pagamentos com totais"""
     data = db.get_resumo_pagamentos()
     totais = data["totais_semanas"]
-    wednesdays = data["wednesdays"]
 
     total_geral = sum(totais.values())
+    total_vencido = totais.get("semana_25_2026", 0)
     num_fornecedores = len(data["pagamentos"])
 
     return {
         "total_geral": total_geral,
+        "total_vencido": total_vencido,
         "num_fornecedores": num_fornecedores,
         "totais_semanas": totais,
-        "wednesdays": wednesdays
+        "wednesdays": data.get("wednesdays", []),
+        "semanas": data.get("semanas", [])
     }
