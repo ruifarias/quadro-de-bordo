@@ -164,10 +164,15 @@ function App() {
   return (
     <div className="pagamentos-container">
       <header className="pagamentos-header">
-        <h1>
-          CLÁSSICO DESPORTIVO - Planeamento de Pagamentos - Documentos a pagar por semana em: {formatDate(new Date())}
-          <span className="header-total-vencido">Total Vencido: {formatCurrency(totalVencido)}</span>
-        </h1>
+        <div className="header-content">
+          <h1 className="header-title-center">
+            <span className="header-classico">CLÁSSICO DESPORTIVO</span>
+          </h1>
+          <h2 className="header-subtitle">
+            Planeamento de Pagamentos - Documentos a pagar por semana em: {formatDate(new Date())}
+            <span className="header-total-vencido">Total Vencido: {formatCurrency(totalVencido)}</span>
+          </h2>
+        </div>
         {summary && (
           <div className="header-total">
             <span className="header-total-label">Total a Pagar:</span>
