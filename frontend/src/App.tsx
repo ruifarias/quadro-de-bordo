@@ -5,6 +5,7 @@ import Sidebar from './components/Sidebar'
 import Header from './components/Header'
 import ExtractoFornecedor from './apps/extracto-fornecedor/App'
 import ValoresEmDivida from './apps/valores-em-divida/App'
+import PlaneamentoPagamentos from './apps/planeamento-pagamentos/App'
 
 interface App {
   id: string
@@ -42,6 +43,8 @@ function App() {
         return <ExtractoFornecedor />
       case 'valores-em-divida':
         return <ValoresEmDivida />
+      case 'planeamento-pagamentos':
+        return <PlaneamentoPagamentos />
       default:
         return <div className="app-placeholder">Aplicação não encontrada</div>
     }

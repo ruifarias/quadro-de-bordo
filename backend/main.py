@@ -47,6 +47,13 @@ def get_apps():
                 "color": "#f57c00"
             },
             {
+                "id": "planeamento-pagamentos",
+                "name": "Planeamento de Pagamentos",
+                "description": "Documentos a pagar organizados por semana",
+                "icon": "calendar_month",
+                "color": "#9c27b0"
+            },
+            {
                 "id": "reposicoes",
                 "name": "Reposições",
                 "description": "Gestão de reposições",
@@ -61,10 +68,12 @@ def get_apps():
 # Import app-specific routers
 from apps.extracto import router as extracto_router
 from apps.valores_em_divida import router as valores_router
+from apps.planeamento_pagamentos import router as planeamento_router
 
 # Include app routers
 app.include_router(extracto_router, prefix="/api/extracto", tags=["Extracto Fornecedor"])
 app.include_router(valores_router, prefix="/api/valores", tags=["Valores em Divida"])
+app.include_router(planeamento_router, prefix="/api/planeamento", tags=["Planeamento de Pagamentos"])
 
 # Serve static files from frontend build
 frontend_dir = os.path.join(os.path.dirname(__file__), '..', 'frontend', 'dist')
