@@ -4,6 +4,7 @@ import './styles/App.css'
 import Sidebar from './components/Sidebar'
 import Header from './components/Header'
 import ExtractoFornecedor from './apps/extracto-fornecedor/App'
+import ValoresEmDivida from './apps/valores-em-divida/App'
 
 interface App {
   id: string
@@ -39,6 +40,8 @@ function App() {
     switch (currentApp) {
       case 'extracto-fornecedor':
         return <ExtractoFornecedor />
+      case 'valores-em-divida':
+        return <ValoresEmDivida />
       default:
         return <div className="app-placeholder">Aplicação não encontrada</div>
     }

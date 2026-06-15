@@ -40,6 +40,13 @@ def get_apps():
                 "color": "#646cff"
             },
             {
+                "id": "valores-em-divida",
+                "name": "Valores em Divida",
+                "description": "Visualizar documentos em aberto de fornecedores",
+                "icon": "trending_up",
+                "color": "#f57c00"
+            },
+            {
                 "id": "reposicoes",
                 "name": "Reposições",
                 "description": "Gestão de reposições",
@@ -53,9 +60,11 @@ def get_apps():
 
 # Import app-specific routers
 from apps.extracto import router as extracto_router
+from apps.valores_em_divida import router as valores_router
 
 # Include app routers
 app.include_router(extracto_router, prefix="/api/extracto", tags=["Extracto Fornecedor"])
+app.include_router(valores_router, prefix="/api/valores", tags=["Valores em Divida"])
 
 # Serve static files from frontend build
 frontend_dir = os.path.join(os.path.dirname(__file__), '..', 'frontend', 'dist')
