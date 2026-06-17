@@ -12,6 +12,10 @@ ZAPP_REPOSICOES_URL = os.getenv("ZAPP_REPOSICOES_URL", "http://localhost:8001")
 class ReposicaoUpdateRequest(BaseModel):
     observacoes: Optional[str] = None
 
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
 def get_auth_token() -> str:
     """Obter token JWT para autenticar com zapp-reposicoes"""
     try:
@@ -26,6 +30,22 @@ def get_auth_token() -> str:
     except Exception as e:
         print(f"Erro ao obter token: {e}")
         return ""
+
+@router.post("/auth/login")
+def login_reposicoes(request: LoginRequest):
+    """Fazer login no zapp-reposicoes"""
+    try:
+        response = requests.post(
+            f"{ZAPP_REPOSICOES_URL}/auth/login",
+            json={"username": request.username, "password": request.password},
+            timeout=5
+        )
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return {"detail": response.json().get("detail", "Erro ao fazer login")}
+    except Exception as e:
+        return {"detail": f"Erro de conexão: {str(e)}"}
 
 def proxy_request(method: str, endpoint: str, data: Optional[dict] = None, params: Optional[dict] = None):
     """Proxy uma requisição para o zapp-reposicoes"""

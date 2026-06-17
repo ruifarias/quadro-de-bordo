@@ -1,11 +1,9 @@
 import { useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { Package, Eye, EyeOff } from 'lucide-react'
 import { login } from '../api/auth'
-import { useAuth } from '../contexts/AuthContext'
+import { useAuth } from '../AuthContext'
 
 export default function LoginPage() {
-  const navigate = useNavigate()
   const { signIn } = useAuth()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -20,7 +18,6 @@ export default function LoginPage() {
     try {
       const user = await login(username, password)
       signIn(user)
-      navigate('/vendas', { replace: true })
     } catch {
       setError('Utilizador ou password incorretos.')
     } finally {
@@ -29,14 +26,14 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-600 to-brand-700 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600 flex items-center justify-center p-4">
+      <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl w-full max-w-sm p-8">
         <div className="flex flex-col items-center mb-8">
-          <div className="bg-brand-600 text-white p-3 rounded-xl mb-3">
-            <Package size={28} />
+          <div className="bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-4 rounded-2xl mb-4 shadow-lg">
+            <Package size={32} strokeWidth={1.5} />
           </div>
-          <h1 className="text-xl font-bold text-slate-900">ZAPP Reposições</h1>
-          <p className="text-sm text-slate-500 mt-1">Gestão de reposição de artigos</p>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">ZAPP Reposições</h1>
+          <p className="text-sm text-slate-600 mt-2 font-medium">Gestão de reposição de artigos</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

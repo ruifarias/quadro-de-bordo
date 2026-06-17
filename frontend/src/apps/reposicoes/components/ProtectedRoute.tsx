@@ -1,5 +1,4 @@
-import { Navigate } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
+import { useAuth } from '../AuthContext'
 import type { ReactNode } from 'react'
 
 interface Props {
@@ -10,8 +9,8 @@ interface Props {
 export default function ProtectedRoute({ children, requiredRole }: Props) {
   const { user } = useAuth()
 
-  if (!user) return <Navigate to="/login" replace />
-  if (requiredRole && user.role !== requiredRole) return <Navigate to="/vendas" replace />
+  if (!user) return <div>Não autenticado</div>
+  if (requiredRole && user.role !== requiredRole) return <div>Acesso negado</div>
 
   return <>{children}</>
 }

@@ -208,6 +208,46 @@ def startup():
     ensure_reposicoes_table()
 
 # ---------------------------------------------------------------------------
+# Aplicações (Registry)
+# ---------------------------------------------------------------------------
+
+@app.get("/api/apps")
+def get_apps():
+    """Retorna a lista de aplicações disponíveis no Quadro de Bordo."""
+    return {
+        "apps": [
+            {
+                "id": "extracto-fornecedor",
+                "name": "Extracto Fornecedor",
+                "description": "Consultar extractos de contas correntes de fornecedores",
+                "icon": "FileText",
+                "color": "#3b82f6"
+            },
+            {
+                "id": "valores-em-divida",
+                "name": "Valores em Dívida",
+                "description": "Documentos em aberto de fornecedores",
+                "icon": "AlertCircle",
+                "color": "#ef4444"
+            },
+            {
+                "id": "planeamento-pagamentos",
+                "name": "Planeamento de Pagamentos",
+                "description": "Gestão de pagamentos a fornecedores",
+                "icon": "Calendar",
+                "color": "#8b5cf6"
+            },
+            {
+                "id": "reposicoes",
+                "name": "Reposições",
+                "description": "Gestão de reposição de artigos",
+                "icon": "Package",
+                "color": "#10b981"
+            }
+        ]
+    }
+
+# ---------------------------------------------------------------------------
 # Autenticação
 # ---------------------------------------------------------------------------
 
@@ -802,4 +842,4 @@ if os.path.exists(FRONTEND_DIST):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    uvicorn.run(app, host="0.0.0.0", port=8003)

@@ -40,47 +40,47 @@ export default function VendasPage() {
       .format(new Date(iso + 'T12:00:00'))
 
   return (
-    <div className="space-y-5">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div className="bg-white rounded-xl shadow-sm p-6 space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4">
         <div>
-          <h1 className="text-lg font-bold text-slate-900">Vendas</h1>
-          <p className="text-sm text-slate-500 capitalize">{formatDateDisplay(date)}</p>
+          <h1 className="text-3xl font-bold text-slate-900">Vendas</h1>
+          <p className="text-base text-slate-600 capitalize mt-1">{formatDateDisplay(date)}</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <div className="relative">
-            <CalendarDays size={15} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <CalendarDays size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="date"
-              className="input pl-8 w-44"
+              className="input pl-10 py-2 w-48 border border-slate-300 rounded-lg"
               value={date}
               onChange={(e) => setDate(e.target.value)}
               max={todayISO()}
             />
           </div>
           <button
-            className="btn-secondary px-2.5 py-2"
+            className="btn-secondary px-3 py-2 rounded-lg border border-slate-300 hover:bg-slate-50 transition"
             onClick={() => refetch()}
             disabled={isFetching}
             title="Atualizar"
           >
-            <RefreshCw size={15} className={isFetching ? 'animate-spin' : ''} />
+            <RefreshCw size={18} className={isFetching ? 'animate-spin' : ''} />
           </button>
         </div>
       </div>
 
       {data && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-          <div className="card px-4 py-3">
-            <p className="text-xs text-slate-500">Total</p>
-            <p className="text-2xl font-bold text-slate-800">{data.total}</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg p-4 border border-slate-200">
+            <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">Total</p>
+            <p className="text-3xl font-bold text-slate-900 mt-2">{data.total}</p>
           </div>
-          <div className="card px-4 py-3">
-            <p className="text-xs text-slate-500">Sem ação</p>
-            <p className="text-2xl font-bold text-slate-500">{semAcao}</p>
+          <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg p-4 border border-slate-200">
+            <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">Sem ação</p>
+            <p className="text-3xl font-bold text-slate-500 mt-2">{semAcao}</p>
           </div>
           <button
             type="button"
-            className={`card px-4 py-3 border-l-4 ${showPendentesOnly ? 'border-red-500 bg-red-50' : 'border-amber-400'} text-left`}
+            className={`rounded-lg p-4 border-l-4 transition cursor-pointer text-left ${showPendentesOnly ? 'bg-amber-50 border-amber-500 shadow-md' : 'bg-white border-amber-300 hover:shadow-sm'}`}
             onClick={() => {
               setShowPendentesOnly((prev) => {
                 if (!prev) { setShowRepostosOnly(false); setShowUltimosOnly(false); setShowTrocasOnly(false) }
@@ -89,12 +89,12 @@ export default function VendasPage() {
             }}
             aria-pressed={showPendentesOnly}
           >
-            <p className={`text-xs ${showPendentesOnly ? 'text-red-700' : 'text-amber-600'}`}>Pendente</p>
-            <p className={`text-2xl font-bold ${showPendentesOnly ? 'text-red-700' : 'text-amber-600'}`}>{pendentes}</p>
+            <p className={`text-xs font-semibold uppercase tracking-wide ${showPendentesOnly ? 'text-amber-700' : 'text-amber-600'}`}>Pendente</p>
+            <p className={`text-3xl font-bold mt-2 ${showPendentesOnly ? 'text-amber-700' : 'text-amber-600'}`}>{pendentes}</p>
           </button>
           <button
             type="button"
-            className={`card px-4 py-3 border-l-4 ${showRepostosOnly ? 'border-emerald-500 bg-emerald-50' : 'border-emerald-400'} text-left`}
+            className={`rounded-lg p-4 border-l-4 transition cursor-pointer text-left ${showRepostosOnly ? 'bg-emerald-50 border-emerald-500 shadow-md' : 'bg-white border-emerald-300 hover:shadow-sm'}`}
             onClick={() => {
               setShowRepostosOnly((prev) => {
                 if (!prev) { setShowPendentesOnly(false); setShowUltimosOnly(false); setShowTrocasOnly(false) }
@@ -103,12 +103,12 @@ export default function VendasPage() {
             }}
             aria-pressed={showRepostosOnly}
           >
-            <p className={`text-xs ${showRepostosOnly ? 'text-emerald-700' : 'text-emerald-600'}`}>Reposto</p>
-            <p className={`text-2xl font-bold ${showRepostosOnly ? 'text-emerald-700' : 'text-emerald-600'}`}>{repostos}</p>
+            <p className={`text-xs font-semibold uppercase tracking-wide ${showRepostosOnly ? 'text-emerald-700' : 'text-emerald-600'}`}>Reposto</p>
+            <p className={`text-3xl font-bold mt-2 ${showRepostosOnly ? 'text-emerald-700' : 'text-emerald-600'}`}>{repostos}</p>
           </button>
           <button
             type="button"
-            className={`card px-4 py-3 border-l-4 ${showUltimosOnly ? 'border-red-500 bg-red-50' : 'border-red-400'} text-left`}
+            className={`rounded-lg p-4 border-l-4 transition cursor-pointer text-left ${showUltimosOnly ? 'bg-red-50 border-red-500 shadow-md' : 'bg-white border-red-300 hover:shadow-sm'}`}
             onClick={() => {
               setShowUltimosOnly((prev) => {
                 if (!prev) { setShowPendentesOnly(false); setShowRepostosOnly(false); setShowTrocasOnly(false) }
@@ -117,12 +117,12 @@ export default function VendasPage() {
             }}
             aria-pressed={showUltimosOnly}
           >
-            <p className={`text-xs ${showUltimosOnly ? 'text-red-700' : 'text-red-600'}`}>Artigos Esgotados</p>
-            <p className={`text-2xl font-bold ${showUltimosOnly ? 'text-red-700' : 'text-red-600'}`}>{ultimos}</p>
+            <p className={`text-xs font-semibold uppercase tracking-wide ${showUltimosOnly ? 'text-red-700' : 'text-red-600'}`}>Esgotados</p>
+            <p className={`text-3xl font-bold mt-2 ${showUltimosOnly ? 'text-red-700' : 'text-red-600'}`}>{ultimos}</p>
           </button>
           <button
             type="button"
-            className={`card px-4 py-3 border-l-4 ${showTrocasOnly ? 'border-pink-500 bg-pink-50' : 'border-pink-400'} text-left`}
+            className={`rounded-lg p-4 border-l-4 transition cursor-pointer text-left ${showTrocasOnly ? 'bg-pink-50 border-pink-500 shadow-md' : 'bg-white border-pink-300 hover:shadow-sm'}`}
             onClick={() => {
               setShowTrocasOnly((prev) => {
                 if (!prev) { setShowPendentesOnly(false); setShowRepostosOnly(false); setShowUltimosOnly(false) }
@@ -131,48 +131,51 @@ export default function VendasPage() {
             }}
             aria-pressed={showTrocasOnly}
           >
-            <p className={`text-xs ${showTrocasOnly ? 'text-pink-700' : 'text-pink-600'}`}>Artigos Trocados</p>
-            <p className={`text-2xl font-bold ${showTrocasOnly ? 'text-pink-700' : 'text-pink-600'}`}>{trocas}</p>
+            <p className={`text-xs font-semibold uppercase tracking-wide ${showTrocasOnly ? 'text-pink-700' : 'text-pink-600'}`}>Trocados</p>
+            <p className={`text-3xl font-bold mt-2 ${showTrocasOnly ? 'text-pink-700' : 'text-pink-600'}`}>{trocas}</p>
           </button>
         </div>
       )}
 
       {isLoading && (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="card p-4 h-28 animate-pulse bg-slate-100" />
+            <div key={i} className="bg-white rounded-lg p-6 h-32 animate-pulse border border-slate-200" />
           ))}
         </div>
       )}
 
       {isError && (
-        <div className="card p-6 text-center text-red-600">
-          Erro ao carregar vendas. Verifique a ligação ao servidor.
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center text-red-700">
+          <p className="font-semibold">Erro ao carregar vendas</p>
+          <p className="text-sm mt-1">Verifique a ligação ao servidor.</p>
         </div>
       )}
 
       {!isLoading && !isError && vendas.length === 0 && (
-        <div className="card p-10 text-center text-slate-400">
-          Nenhuma venda encontrada para esta data.
+        <div className="bg-white rounded-lg p-12 text-center text-slate-500 border border-slate-200">
+          <p className="font-semibold">Nenhuma venda encontrada para esta data</p>
         </div>
       )}
 
       {!isLoading && vendasToRender.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <div className="space-y-4">
           {vendasToRender.map((venda, idx) => (
             <VendaCard key={`${venda.Codigo_Artigo}-${venda.Codigo_Lote}-${venda.Numero_Doc}-${idx}`} venda={venda} queryKey={queryKey} />
           ))}
         </div>
       )}
       {!isLoading && vendasToRender.length === 0 && vendas.length > 0 && (
-        <div className="card p-10 text-center text-slate-400">
-          {showTrocasOnly
-            ? 'Nenhum artigo trocado encontrado para esta data.'
-            : showUltimosOnly
-              ? 'Nenhum artigo esgotado encontrado para esta data.'
-              : showRepostosOnly
-                ? 'Nenhuma venda reposta encontrada para esta data.'
-                : 'Nenhuma venda pendente encontrada para esta data.'}
+        <div className="bg-white rounded-lg p-12 text-center text-slate-500 border border-slate-200">
+          <p className="font-semibold">
+            {showTrocasOnly
+              ? 'Nenhum artigo trocado encontrado'
+              : showUltimosOnly
+                ? 'Nenhum artigo esgotado encontrado'
+                : showRepostosOnly
+                  ? 'Nenhuma venda reposta encontrada'
+                  : 'Nenhuma venda pendente encontrada'}
+          </p>
         </div>
       )}
     </div>

@@ -50,13 +50,17 @@ function ExtractoFornecedor() {
 
   const fetchContas = async () => {
     try {
+      console.log('Fetching contas...')
       const response = await axios.get('/api/extracto/contas', {
         params: { ano }
       })
-      setContas(response.data.contas)
+      console.log('Contas response:', response.data)
+      setContas(response.data.contas || response.data || [])
       setCodigoConta('')
-    } catch (err) {
-      setError('Erro ao carregar contas')
+    } catch (err: any) {
+      console.error('Erro ao carregar contas:', err)
+      setError(`Erro ao carregar contas: ${err.message}`)
+      setContas([])
     }
   }
 

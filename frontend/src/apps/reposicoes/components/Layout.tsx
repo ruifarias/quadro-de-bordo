@@ -1,56 +1,65 @@
 import { useState, type ReactNode } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
 import { Package, LayoutDashboard, History, BarChart2, Layers, LogOut, Menu, X } from 'lucide-react'
-import { useAuth } from '../contexts/AuthContext'
+import { useAuth } from '../AuthContext'
 
-export default function Layout({ children }: { children: ReactNode }) {
+interface NavLink {
+  id: string
+  label: string
+  icon: React.ReactNode
+  requiresGestor?: boolean
+}
+
+interface LayoutProps {
+  children: ReactNode
+  onNavigate: (page: string) => void
+  currentPage: string
+}
+
+export default function Layout({ children, onNavigate, currentPage }: LayoutProps) {
   const { user, signOut } = useAuth()
-  const navigate = useNavigate()
   const [mobileOpen, setMobileOpen] = useState(false)
 
   const handleLogout = () => {
     signOut()
-    navigate('/login')
   }
 
-  const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+  const navLinks: NavLink[] = [
+    { id: 'vendas', label: 'Vendas', icon: <Package size={16} /> },
+    { id: 'lotes', label: 'Lotes por Artigo', icon: <Layers size={16} /> },
+    { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={16} />, requiresGestor: true },
+    { id: 'historico', label: 'Histórico', icon: <History size={16} />, requiresGestor: true },
+    { id: 'dashboard-historico', label: 'Dashboard Histórico', icon: <BarChart2 size={16} />, requiresGestor: true },
+  ]
+
+  const navLinkClass = (id: string) =>
     `flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-      isActive
+      currentPage === id
         ? 'bg-brand-600 text-white'
         : 'text-slate-600 hover:bg-slate-100'
     }`
 
-  const navLinks = (
+  const filteredLinks = navLinks.filter(link => !link.requiresGestor || user?.role === 'gestor')
+
+  const renderNavLinks = () => (
     <>
-      <NavLink to="/vendas" className={navLinkClass} onClick={() => setMobileOpen(false)}>
-        <Package size={16} />
-        Vendas
-      </NavLink>
-      <NavLink to="/lotes" className={navLinkClass} onClick={() => setMobileOpen(false)}>
-        <Layers size={16} />
-        Lotes por Artigo
-      </NavLink>
-      {user?.role === 'gestor' && (
-        <>
-          <NavLink to="/dashboard" className={navLinkClass} onClick={() => setMobileOpen(false)}>
-            <LayoutDashboard size={16} />
-            Dashboard
-          </NavLink>
-          <NavLink to="/historico" className={navLinkClass} onClick={() => setMobileOpen(false)}>
-            <History size={16} />
-            Histórico
-          </NavLink>
-          <NavLink to="/dashboard-historico" className={navLinkClass} onClick={() => setMobileOpen(false)}>
-            <BarChart2 size={16} />
-            Dashboard Histórico
-          </NavLink>
-        </>
-      )}
+      {filteredLinks.map(link => (
+        <button
+          key={link.id}
+          onClick={() => {
+            onNavigate(link.id)
+            setMobileOpen(false)
+          }}
+          className={navLinkClass(link.id)}
+        >
+          {link.icon}
+          {link.label}
+        </button>
+      ))}
     </>
   )
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-slate-50">
       <header className="fixed top-0 inset-x-0 z-50 bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 font-bold text-brand-700 shrink-0">
@@ -60,7 +69,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           </div>
 
           <nav className="hidden md:flex items-center gap-1">
-            {navLinks}
+            {renderNavLinks()}
           </nav>
 
           <div className="flex items-center gap-3">
@@ -84,7 +93,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 
         {mobileOpen && (
           <div className="md:hidden border-t border-slate-100 bg-white px-4 py-3 flex flex-col gap-1">
-            {navLinks}
+            {renderNavLinks()}
             <hr className="my-2 border-slate-100" />
             <div className="flex items-center justify-between py-1">
               <span className="text-sm text-slate-600">

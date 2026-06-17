@@ -1,12 +1,14 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import axios from 'axios'
 import './styles/App.css'
 import Sidebar from './components/Sidebar'
 import Header from './components/Header'
-import ExtractoFornecedor from './apps/extracto-fornecedor/App'
-import ValoresEmDivida from './apps/valores-em-divida/App'
-import PlaneamentoPagamentos from './apps/planeamento-pagamentos/App'
-import Reposicoes from './apps/reposicoes/App'
+
+// Lazy load das apps para evitar erros de importação
+const ExtractoFornecedor = lazy(() => import('./apps/extracto-fornecedor/App'))
+const ValoresEmDivida = lazy(() => import('./apps/valores-em-divida/App'))
+const PlaneamentoPagamentos = lazy(() => import('./apps/planeamento-pagamentos/App'))
+const Reposicoes = lazy(() => import('./apps/reposicoes/App'))
 
 interface App {
   id: string
@@ -22,6 +24,7 @@ function App() {
   const [apps, setApps] = useState<App[]>([])
   const [currentApp, setCurrentApp] = useState<string>('extracto-fornecedor')
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string>('')
 
   useEffect(() => {
     fetchApps()
@@ -30,40 +33,57 @@ function App() {
   const fetchApps = async () => {
     try {
       const response = await axios.get('/api/apps')
-      setApps(response.data.apps)
+      console.log('Response:', response.data)
+      const appsArray = Array.isArray(response.data) ? response.data : (response.data.apps || [])
+      console.log('Apps:', appsArray)
+      setApps(appsArray)
       setLoading(false)
-    } catch (error) {
-      console.error('Erro ao carregar aplicações:', error)
+    } catch (err: any) {
+      console.error('Erro ao carregar aplicações:', err)
+      const errorMsg = err.message || 'Erro ao carregar aplicações'
+      setError(errorMsg)
       setLoading(false)
     }
   }
 
   const renderApp = () => {
-    switch (currentApp) {
-      case 'extracto-fornecedor':
-        return <ExtractoFornecedor />
-      case 'valores-em-divida':
-        return <ValoresEmDivida />
-      case 'planeamento-pagamentos':
-        return <PlaneamentoPagamentos />
-      case 'reposicoes':
-        return <Reposicoes />
-      default:
-        return <div className="app-placeholder">Aplicação não encontrada</div>
+    try {
+      switch (currentApp) {
+        case 'extracto-fornecedor':
+          return <ExtractoFornecedor />
+        case 'valores-em-divida':
+          return <ValoresEmDivida />
+        case 'planeamento-pagamentos':
+          return <PlaneamentoPagamentos />
+        case 'reposicoes':
+          return <Reposicoes />
+        default:
+          return <div className="app-placeholder">Aplicação não encontrada</div>
+      }
+    } catch (e) {
+      return <div style={{color: 'red', padding: '20px'}}>Erro ao renderizar app: {String(e)}</div>
     }
+  }
+
+  if (error) {
+    return <div className="error" style={{color: 'red', padding: '20px'}}><strong>Erro:</strong> {error}</div>
   }
 
   if (loading) {
     return <div className="loading">Carregando...</div>
   }
 
+  const safeApps = Array.isArray(apps) ? apps : []
+
   return (
     <div className="quadro-de-bordo">
-      <Sidebar apps={apps} currentApp={currentApp} onAppChange={setCurrentApp} />
+      <Sidebar apps={safeApps} currentApp={currentApp} onAppChange={setCurrentApp} />
       <div className="main-content">
-        <Header appName={apps.find(a => a.id === currentApp)?.name || 'Quadro de Bordo'} />
+        <Header appName={safeApps.find(a => a.id === currentApp)?.name || 'Quadro de Bordo'} />
         <div className="app-container">
-          {renderApp()}
+          <Suspense fallback={<div>Carregando app...</div>}>
+            {renderApp()}
+          </Suspense>
         </div>
       </div>
     </div>
