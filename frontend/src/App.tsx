@@ -6,6 +6,7 @@ import Header from './components/Header'
 import ExtractoFornecedor from './apps/extracto-fornecedor/App'
 import ValoresEmDivida from './apps/valores-em-divida/App'
 import PlaneamentoPagamentos from './apps/planeamento-pagamentos/App'
+import Reposicoes from './apps/reposicoes/App'
 
 interface App {
   id: string
@@ -45,6 +46,8 @@ function App() {
         return <ValoresEmDivida />
       case 'planeamento-pagamentos':
         return <PlaneamentoPagamentos />
+      case 'reposicoes':
+        return <Reposicoes />
       default:
         return <div className="app-placeholder">Aplicação não encontrada</div>
     }
