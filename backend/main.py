@@ -15,13 +15,33 @@ from typing import Optional
 import pyodbc
 import base64
 import os
+import sys
 import jwt
 import datetime
 from dateutil import parser as dateutil_parser
 import logging
+import importlib.util
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
+# Dynamic import for apps to work with both 'python main.py' and 'python -m backend.main'
+_backend_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, _backend_dir)
+spec = importlib.util.spec_from_file_location("apps.extracto", os.path.join(_backend_dir, "apps", "extracto.py"))
+extracto_module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(extracto_module)
+extracto_router = extracto_module.router
+
+spec = importlib.util.spec_from_file_location("apps.valores_em_divida", os.path.join(_backend_dir, "apps", "valores_em_divida.py"))
+valores_module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(valores_module)
+valores_router = valores_module.router
+
+spec = importlib.util.spec_from_file_location("apps.planeamento_pagamentos", os.path.join(_backend_dir, "apps", "planeamento_pagamentos.py"))
+planeamento_module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(planeamento_module)
+planeamento_router = planeamento_module.router
 
 # ---------------------------------------------------------------------------
 # Configuração
@@ -57,6 +77,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Registar routers das apps
+app.include_router(extracto_router, prefix="/api/extracto")
+app.include_router(valores_router, prefix="/api/valores-em-divida")
+app.include_router(planeamento_router, prefix="/api/planeamento")
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -817,7 +842,9 @@ def get_lotes(codigo_artigo: str, user=Depends(verify_token)):
 # Servir frontend compilado (produção)
 # ---------------------------------------------------------------------------
 
-FRONTEND_DIST = os.path.join(os.path.dirname(os.path.abspath(__file__)), "frontend", "dist")
+_backend_dir = os.path.dirname(os.path.abspath(__file__))
+_project_dir = os.path.dirname(_backend_dir)
+FRONTEND_DIST = os.path.join(_project_dir, "frontend", "dist")
 
 if os.path.exists(FRONTEND_DIST):
     assets_dir = os.path.join(FRONTEND_DIST, "assets")

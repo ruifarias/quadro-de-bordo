@@ -33,8 +33,8 @@ function ValoresEmDivida() {
       setError(null)
 
       const [valoresRes, resumoRes] = await Promise.all([
-        axios.get('/api/valores/lista'),
-        axios.get('/api/valores/resumo'),
+        axios.get('/api/valores-em-divida/lista'),
+        axios.get('/api/valores-em-divida/resumo'),
       ])
 
       setValores(valoresRes.data.valores)
