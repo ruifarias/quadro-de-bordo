@@ -38,17 +38,16 @@
   .card {
     @apply bg-white rounded-xl border border-slate-100 shadow-sm;
   }
-}
-
-/* Force white background for Lotes app */
-.space-y-5 {
-  background-color: #f8fafc !important;
-  padding: 20px;
-}
   .input {
     @apply w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500;
   }
   .label {
     @apply block text-sm font-medium text-slate-700 mb-1;
   }
+}
+
+/* Force white background for Lotes app */
+.space-y-5 {
+  background-color: #f8fafc !important;
+  padding: 20px;
 }
