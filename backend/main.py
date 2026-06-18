@@ -261,13 +261,6 @@ def get_apps():
                 "description": "Gestão de pagamentos a fornecedores",
                 "icon": "Calendar",
                 "color": "#8b5cf6"
-            },
-            {
-                "id": "reposicoes",
-                "name": "Reposições",
-                "description": "Gestão de reposição de artigos",
-                "icon": "Package",
-                "color": "#10b981"
             }
         ]
     }
