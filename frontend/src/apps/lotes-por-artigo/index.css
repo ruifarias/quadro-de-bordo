@@ -147,6 +147,7 @@
 }
 .lotes-por-artigo-app .input.uppercase { text-transform: uppercase; }
 .lotes-por-artigo-app .input-artigo { width: 12ch; }
+.lotes-por-artigo-app .img-artigo { width: 204px; height: 204px; }
 .lotes-por-artigo-app .info-inline {
   align-self: stretch;
   border-left: 1px solid #e2e8f0;

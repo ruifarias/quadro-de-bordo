@@ -119,10 +119,10 @@ export default function LotesPage() {
                   <img
                     src={`data:image/jpeg;base64,${data.imagem_base64}`}
                     alt={data.codigo_artigo}
-                    className="w-32 h-32 object-cover rounded-2xl border border-slate-100"
+                    className="img-artigo object-cover rounded-2xl border border-slate-100"
                   />
                 ) : (
-                  <div className="w-32 h-32 rounded-2xl bg-slate-100 flex items-center justify-center">
+                  <div className="img-artigo rounded-2xl bg-slate-100 flex items-center justify-center">
                     <Package2 size={40} className="text-slate-400" />
                   </div>
                 )}
