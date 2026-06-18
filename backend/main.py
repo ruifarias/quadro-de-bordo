@@ -43,6 +43,11 @@ planeamento_module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(planeamento_module)
 planeamento_router = planeamento_module.router
 
+spec = importlib.util.spec_from_file_location("apps.lotes_por_artigo", os.path.join(_backend_dir, "apps", "lotes_por_artigo.py"))
+lotes_module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(lotes_module)
+lotes_router = lotes_module.router
+
 # ---------------------------------------------------------------------------
 # Configuração
 # ---------------------------------------------------------------------------
@@ -82,6 +87,7 @@ app.add_middleware(
 app.include_router(extracto_router, prefix="/api/extracto")
 app.include_router(valores_router, prefix="/api/valores-em-divida")
 app.include_router(planeamento_router, prefix="/api/planeamento")
+app.include_router(lotes_router, prefix="/api/lotes")
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
