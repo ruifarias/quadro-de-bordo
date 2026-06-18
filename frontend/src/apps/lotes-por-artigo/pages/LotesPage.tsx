@@ -21,11 +21,6 @@ export default function LotesPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-baseline gap-2 flex-wrap">
-        <h1 className="text-base font-bold text-slate-900">Lotes por Artigo</h1>
-        <p className="text-xs text-slate-500">Consulta de lotes e quantidades disponíveis por artigo</p>
-      </div>
-
       {/* Pesquisa */}
       <div className="card p-3">
         <div className="flex items-end gap-3">
