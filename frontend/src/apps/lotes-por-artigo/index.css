@@ -146,6 +146,7 @@
   box-shadow: 0 0 0 1px #6366f1;
 }
 .lotes-por-artigo-app .input.uppercase { text-transform: uppercase; }
+.lotes-por-artigo-app .input-artigo { width: 12ch; }
 
 .lotes-por-artigo-app .btn-primary {
   display: inline-flex;

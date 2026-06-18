@@ -21,21 +21,22 @@ export default function LotesPage() {
 
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="text-lg font-bold text-slate-900">Lotes por Artigo</h1>
-        <p className="text-sm text-slate-500">Consulta de lotes e quantidades disponíveis por artigo</p>
+      <div className="flex items-baseline gap-2 flex-wrap">
+        <h1 className="text-base font-bold text-slate-900">Lotes por Artigo</h1>
+        <p className="text-xs text-slate-500">Consulta de lotes e quantidades disponíveis por artigo</p>
       </div>
 
       {/* Pesquisa */}
-      <div className="card p-4">
-        <div className="flex gap-3">
-          <div className="flex-1">
+      <div className="card p-3">
+        <div className="flex items-end gap-3">
+          <div>
             <label className="label">Código do artigo</label>
             <input
               ref={inputRef}
               autoFocus
               type="text"
-              className="input uppercase"
+              maxLength={10}
+              className="input uppercase input-artigo"
               placeholder="Ex: 40956"
               value={codigo}
               onChange={(e) => setCodigo(e.target.value.toUpperCase())}
