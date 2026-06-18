@@ -8,6 +8,7 @@ import Header from './components/Header'
 const ExtractoFornecedor = lazy(() => import('./apps/extracto-fornecedor/App'))
 const ValoresEmDivida = lazy(() => import('./apps/valores-em-divida/App'))
 const PlaneamentoPagamentos = lazy(() => import('./apps/planeamento-pagamentos/App'))
+const LotesPorArtigo = lazy(() => import('./apps/lotes-por-artigo/App'))
 
 interface App {
   id: string
@@ -54,6 +55,8 @@ function App() {
           return <ValoresEmDivida />
         case 'planeamento-pagamentos':
           return <PlaneamentoPagamentos />
+        case 'lotes-por-artigo':
+          return <LotesPorArtigo />
         default:
           return <div className="app-placeholder">Aplicação não encontrada</div>
       }

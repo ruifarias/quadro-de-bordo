@@ -261,6 +261,13 @@ def get_apps():
                 "description": "Gestão de pagamentos a fornecedores",
                 "icon": "Calendar",
                 "color": "#8b5cf6"
+            },
+            {
+                "id": "lotes-por-artigo",
+                "name": "Lotes por Artigo",
+                "description": "Consulta de lotes e quantidades disponíveis por artigo",
+                "icon": "Package",
+                "color": "#06b6d4"
             }
         ]
     }
