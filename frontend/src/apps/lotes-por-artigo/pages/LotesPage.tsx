@@ -21,7 +21,7 @@ export default function LotesPage() {
 
   return (
     <div className="space-y-5">
-      {/* Pesquisa */}
+      {/* Pesquisa + info do artigo na mesma linha */}
       <div className="card p-3">
         <div className="flex items-end gap-3">
           <div>
@@ -58,6 +58,44 @@ export default function LotesPage() {
               {isFetching && <RefreshCw size={13} className="animate-spin" />}
             </button>
           </div>
+
+          {/* Info do artigo à direita */}
+          {data && data.lotes.length > 0 && (() => {
+            const stockTotal = data.lotes.reduce((s, l) => s + l.Qtd_Disponivel, 0)
+            return (
+              <div className="flex items-center gap-3 flex-1 info-inline">
+                <Package2 size={18} className="text-blue-600 shrink-0" />
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-sm font-bold text-blue-600 font-mono">{data.codigo_artigo}</span>
+                  <span className="text-slate-300">·</span>
+                  <span className="text-sm font-semibold text-slate-800">{data.lotes[0].Descritivo_Artigo}</span>
+                  {data.lotes[0].Preco != null && (
+                    <>
+                      <span className="text-slate-300">·</span>
+                      <span className="text-sm font-bold text-emerald-600">{formatCurrency(data.lotes[0].Preco)}</span>
+                    </>
+                  )}
+                  {stockTotal === 0 && (
+                    <>
+                      <span className="text-slate-300">·</span>
+                      <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold bg-red-100 text-red-600">
+                        ESGOTADO
+                      </span>
+                    </>
+                  )}
+                </div>
+                <div className="ml-auto flex items-center gap-3 shrink-0">
+                  <span className="text-sm text-slate-500">
+                    {data.total} {data.total === 1 ? 'lote' : 'lotes'}
+                  </span>
+                  <span className="text-sm font-bold text-slate-700">
+                    Stock total:{' '}
+                    <span className={stockTotal > 0 ? 'text-emerald-600' : 'text-red-600'}>{stockTotal}</span>
+                  </span>
+                </div>
+              </div>
+            )
+          })()}
         </div>
       </div>
 
@@ -69,46 +107,6 @@ export default function LotesPage() {
 
       {data && (
         <>
-          {/* Cabeçalho */}
-          <div className="card px-5 py-3 flex items-center gap-3">
-            <Package2 size={18} className="text-blue-600 shrink-0" />
-            {data.lotes.length > 0 && (() => {
-              const stockTotal = data.lotes.reduce((s, l) => s + l.Qtd_Disponivel, 0)
-              return (
-                <>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-sm font-bold text-blue-600 font-mono">{data.codigo_artigo}</span>
-                    <span className="text-slate-300">·</span>
-                    <span className="text-sm font-semibold text-slate-800">{data.lotes[0].Descritivo_Artigo}</span>
-                    {data.lotes[0].Preco != null && (
-                      <>
-                        <span className="text-slate-300">·</span>
-                        <span className="text-sm font-bold text-emerald-600">{formatCurrency(data.lotes[0].Preco)}</span>
-                      </>
-                    )}
-                    {stockTotal === 0 && (
-                      <>
-                        <span className="text-slate-300">·</span>
-                        <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold bg-red-100 text-red-600">
-                          ESGOTADO
-                        </span>
-                      </>
-                    )}
-                  </div>
-                  <div className="ml-auto flex items-center gap-3 shrink-0">
-                    <span className="text-sm text-slate-500">
-                      {data.total} {data.total === 1 ? 'lote' : 'lotes'}
-                    </span>
-                    <span className="text-sm font-bold text-slate-700">
-                      Stock total:{' '}
-                      <span className={stockTotal > 0 ? 'text-emerald-600' : 'text-red-600'}>{stockTotal}</span>
-                    </span>
-                  </div>
-                </>
-              )
-            })()}
-          </div>
-
           {data.lotes.length === 0 ? (
             <div className="card p-10 text-center text-slate-400 text-sm">
               Nenhum lote encontrado para o artigo <span className="font-mono font-bold">{data.codigo_artigo}</span>.
