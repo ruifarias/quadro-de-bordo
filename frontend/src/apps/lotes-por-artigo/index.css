@@ -2,17 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --app-bg: #f8fafc;
-}
-
 @layer base {
   body {
     @apply bg-slate-50 text-slate-900 antialiased;
-  }
-
-  .space-y-5 {
-    @apply bg-slate-50;
   }
 }
 
@@ -46,8 +38,11 @@
   }
 }
 
-/* Force white background for Lotes app */
-.space-y-5 {
-  background-color: #f8fafc !important;
-  padding: 20px;
+/* Wrapper para fundo claro dentro do Quadro de Bordo (que usa tema escuro) */
+.lotes-por-artigo-app {
+  background-color: #f8fafc;
+  color: #0f172a;
+  min-height: 100%;
+  margin: -20px;
+  padding: 24px;
 }

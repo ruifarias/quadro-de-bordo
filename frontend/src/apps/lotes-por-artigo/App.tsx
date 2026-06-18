@@ -16,7 +16,9 @@ export default function LotesPorArtigo() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <LotesPage />
+        <div className="lotes-por-artigo-app">
+          <LotesPage />
+        </div>
       </AuthProvider>
     </QueryClientProvider>
   )
