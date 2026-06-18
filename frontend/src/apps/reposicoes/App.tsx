@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { AuthProvider } from './contexts/AuthContext'
 import VendasPage from './pages/VendasPage'
 import './index.css'
 
@@ -14,7 +15,9 @@ const queryClient = new QueryClient({
 export default function Reposicoes() {
   return (
     <QueryClientProvider client={queryClient}>
-      <VendasPage />
+      <AuthProvider>
+        <VendasPage />
+      </AuthProvider>
     </QueryClientProvider>
   )
 }
