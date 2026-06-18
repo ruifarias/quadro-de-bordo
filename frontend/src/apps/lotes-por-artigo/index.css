@@ -2,9 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --app-bg: #f8fafc;
+}
+
 @layer base {
   body {
     @apply bg-slate-50 text-slate-900 antialiased;
+  }
+
+  .space-y-5 {
+    @apply bg-slate-50;
   }
 }
 
@@ -30,6 +38,13 @@
   .card {
     @apply bg-white rounded-xl border border-slate-100 shadow-sm;
   }
+}
+
+/* Force white background for Lotes app */
+.space-y-5 {
+  background-color: #f8fafc !important;
+  padding: 20px;
+}
   .input {
     @apply w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500;
   }
