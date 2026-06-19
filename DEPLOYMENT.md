@@ -5,12 +5,12 @@
 A aplicação está pronta para funcionar em rede. Aceda a partir de qualquer computador:
 
 ```
-http://<IP_DO_SERVIDOR>:8002
+http://<IP_DO_SERVIDOR>:8003
 ```
 
 Substituir `<IP_DO_SERVIDOR>` pelo IP ou hostname do computador onde o backend está a correr.
 
-**Exemplo**: `http://192.168.1.100:8002` ou `http://servidor-classico:8002`
+**Exemplo**: `http://192.168.1.100:8003` ou `http://servidor-classico:8003`
 
 ---
 
@@ -51,9 +51,13 @@ python -m backend.main
 
 ## Portas Utilizadas
 
-- **Quadro de Bordo**: `8002` (frontend + APIs)
-- **zapp-extracto-fornecedor** (standalone): `8001` (opcional, apenas se usado isoladamente)
-- **zapp-reposições**: `8000` (se existir)
+- **Quadro de Bordo**: `8003` (frontend + APIs) — **porta fixa**
+- **zapp-reposições**: `8001`
+- **zapp-extracto-fornecedor** (standalone): `8002`
+- **zapp-valores-em-divida**: `8004`
+- **zapp-planeamento-pagamentos**: `8005`
+
+Registo central de portas: ver `PORTAS.md` na raiz dos Projectos Visual Studio.
 
 ---
 
@@ -64,7 +68,7 @@ Pré-compilado e pronto:
 ```
 quadro-de-bordo/
 ├── backend/
-│   ├── main.py          ← Inicia na porta 8002
+│   ├── main.py          ← Inicia na porta 8003
 │   ├── apps/
 │   │   └── extracto.py  ← Roteia para zapp-extracto-fornecedor
 │   └── requirements.txt
@@ -96,12 +100,12 @@ quadro-de-bordo/
 
 ## Troubleshooting
 
-### Porta 8002 já em uso
+### Porta 8003 já em uso
 
 Matar o processo:
 
 ```powershell
-Get-NetTCPConnection -LocalPort 8002 -ErrorAction SilentlyContinue | 
+Get-NetTCPConnection -LocalPort 8003 -ErrorAction SilentlyContinue | 
 ForEach-Object { Get-Process -Id $_.OwningProcess } | 
 Stop-Process -Force
 ```

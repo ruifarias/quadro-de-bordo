@@ -73,7 +73,7 @@ npm install
 # Terminal 1 - Backend
 python -m quadro_de_bordo.backend.main
 # Ou simplesmente: python backend/main.py
-# Porta: 8000
+# Porta: 8003
 
 # Terminal 2 - Frontend
 cd frontend && npm run dev
@@ -149,10 +149,10 @@ npm run build
 
 ## Portas
 
-- Backend: 8000 (Quadro de Bordo hub)
-- Frontend: 5173
+- Backend: 8003 (Quadro de Bordo hub) — **porta fixa**
+- Frontend (dev): 5173
 
-Nota: Se `zapp-extracto-fornecedor` executar em paralelo, usa porta 8001 para evitar conflito.
+Nota: O registo central de portas de todos os projectos está em `PORTAS.md` (na raiz dos Projectos Visual Studio).
 
 ## Integração com Aplicações Existentes
 
