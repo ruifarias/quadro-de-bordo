@@ -49,7 +49,8 @@ async def get_pagamentos_lista():
         "fornecedoresTransferenciaComCredito": fornecedoresTransferenciaComCredito,
         "totais_semanas": data["totais_semanas"],
         "wednesdays": data["wednesdays"],
-        "semanas": data.get("semanas", [])
+        "semanas": data.get("semanas", []),
+        "total_vencido": data.get("total_vencido", 0)
     }
 
 @router.get("/resumo")
@@ -59,7 +60,7 @@ async def get_pagamentos_resumo():
     totais = data["totais_semanas"]
 
     total_geral = sum(totais.values())
-    total_vencido = totais.get("semana_25_2026", 0)
+    total_vencido = data.get("total_vencido", 0)
     num_fornecedores = len(data["pagamentos"])
 
     return {
