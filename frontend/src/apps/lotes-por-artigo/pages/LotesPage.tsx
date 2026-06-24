@@ -72,7 +72,19 @@ export default function LotesPage() {
                   {data.lotes[0].Preco != null && (
                     <>
                       <span className="text-slate-300">·</span>
-                      <span className="text-sm font-bold text-emerald-600">{formatCurrency(data.lotes[0].Preco)}</span>
+                      <span className="text-sm font-bold text-blue-600">PVP {formatCurrency(data.lotes[0].Preco)}</span>
+                    </>
+                  )}
+                  {data.lotes[0].Desconto > 0 && (
+                    <>
+                      <span className="text-slate-300">·</span>
+                      <span className="text-sm font-bold text-amber-600">−{data.lotes[0].Desconto}%</span>
+                    </>
+                  )}
+                  {data.lotes[0].Preco_Liquido != null && (
+                    <>
+                      <span className="text-slate-300">·</span>
+                      <span className="text-sm font-bold text-emerald-600">Líquido {formatCurrency(data.lotes[0].Preco_Liquido)}</span>
                     </>
                   )}
                   {stockTotal === 0 && (

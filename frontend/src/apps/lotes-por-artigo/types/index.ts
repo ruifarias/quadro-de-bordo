@@ -109,6 +109,8 @@ export interface Lote {
   Descricao_Lote: string | null
   Qtd_Disponivel: number
   Preco: number | null
+  Desconto: number
+  Preco_Liquido: number | null
 }
 
 export interface LotesResponse {
@@ -116,6 +118,30 @@ export interface LotesResponse {
   total: number
   imagem_base64: string | null
   lotes: Lote[]
+}
+
+export interface LoteNome {
+  Codigo_Lote: string
+  Descricao_Lote: string | null
+  Qtd_Disponivel: number
+}
+
+export interface ArtigoLotes {
+  Codigo_Artigo: string
+  Descritivo_Artigo: string
+  Preco: number | null
+  Desconto: number
+  Preco_Liquido: number | null
+  imagem_base64: string | null
+  total_lotes: number
+  lotes: LoteNome[]
+}
+
+export interface LotesPorNomeResponse {
+  query: string
+  total_artigos: number
+  truncado: boolean
+  artigos: ArtigoLotes[]
 }
 
 export type VendaStatus = 'sem_reposicao' | 'pendente' | 'reposto'

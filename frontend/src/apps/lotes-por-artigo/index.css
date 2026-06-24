@@ -38,15 +38,19 @@
 .lotes-por-artigo-app .px-2\.5 { padding-left: 0.625rem; padding-right: 0.625rem; }
 .lotes-por-artigo-app .py-3  { padding-top: 0.75rem; padding-bottom: 0.75rem; }
 .lotes-por-artigo-app .py-1\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
-.lotes-por-artigo-app .py-0\.5 { padding-top: 0.125rem; padding-bottom: 0.125rem; }
+.lotes-por-artigo-app .py-0\.5 { padding-top: 0.0625rem; padding-bottom: 0.0625rem; }
+.lotes-por-artigo-app .py-2  { padding-top: 0.5rem; padding-bottom: 0.5rem; }
 .lotes-por-artigo-app .ml-auto { margin-left: auto; }
 .lotes-por-artigo-app .mb-1 { margin-bottom: 0.25rem; }
+.lotes-por-artigo-app .space-y-4 > * + * { margin-top: 1rem; }
 
 /* ---- Flex ---- */
 .lotes-por-artigo-app .flex { display: flex; }
 .lotes-por-artigo-app .inline-flex { display: inline-flex; }
 .lotes-por-artigo-app .flex-1 { flex: 1 1 0%; }
+.lotes-por-artigo-app .flex-col { flex-direction: column; }
 .lotes-por-artigo-app .flex-wrap { flex-wrap: wrap; }
+.lotes-por-artigo-app .min-w-0 { min-width: 0; }
 .lotes-por-artigo-app .items-center { align-items: center; }
 .lotes-por-artigo-app .items-start { align-items: flex-start; }
 .lotes-por-artigo-app .items-end { align-items: flex-end; }
@@ -80,11 +84,15 @@
 .lotes-por-artigo-app .text-emerald-600 { color: #059669; }
 .lotes-por-artigo-app .text-red-600 { color: #dc2626; }
 .lotes-por-artigo-app .text-red-700 { color: #b91c1c; }
+.lotes-por-artigo-app .text-amber-600 { color: #d97706; }
+.lotes-por-artigo-app .text-amber-700 { color: #b45309; }
 
 /* ---- Colors (bg) ---- */
+.lotes-por-artigo-app .bg-white { background-color: #ffffff; }
 .lotes-por-artigo-app .bg-slate-50 { background-color: #f8fafc; }
 .lotes-por-artigo-app .bg-slate-100 { background-color: #f1f5f9; }
 .lotes-por-artigo-app .bg-red-100 { background-color: #fee2e2; }
+.lotes-por-artigo-app .bg-amber-100 { background-color: #fef3c7; }
 
 /* ---- Borders / rounding ---- */
 .lotes-por-artigo-app .rounded-full { border-radius: 9999px; }
@@ -147,7 +155,8 @@
 }
 .lotes-por-artigo-app .input.uppercase { text-transform: uppercase; }
 .lotes-por-artigo-app .input-artigo { width: 12ch; }
-.lotes-por-artigo-app .img-artigo { width: 204px; height: 204px; }
+.lotes-por-artigo-app .input-nome { width: 24ch; }
+.lotes-por-artigo-app .img-artigo { width: 248px; height: 248px; }
 .lotes-por-artigo-app .info-inline {
   align-self: stretch;
   border-left: 1px solid #e2e8f0;
@@ -175,3 +184,31 @@
 /* ---- Tabela ---- */
 .lotes-por-artigo-app table { border-collapse: collapse; }
 .lotes-por-artigo-app img { display: block; max-width: 100%; }
+
+/* ---- Separadores (tabs) ---- */
+.lotes-por-artigo-app .lpa-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+.lotes-por-artigo-app .lpa-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+  transition: color 150ms, border-color 150ms;
+}
+.lotes-por-artigo-app .lpa-tab:hover { color: #334155; }
+.lotes-por-artigo-app .lpa-tab.active {
+  color: #4f46e5;
+  border-bottom-color: #4f46e5;
+}
