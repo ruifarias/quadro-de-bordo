@@ -246,7 +246,7 @@ export default function LotesNomePage() {
           ))}
           <div className="flex justify-center pt-2 pb-4">
             <button
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              onClick={() => document.querySelector('.app-container')?.scrollTo({ top: 0, behavior: 'smooth' })}
               className="btn-primary gap-2"
             >
               ↑ Voltar ao topo
