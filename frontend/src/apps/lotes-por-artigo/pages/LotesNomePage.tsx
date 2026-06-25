@@ -209,13 +209,9 @@ export default function LotesNomePage() {
             <div className="flex items-center gap-3 ml-auto">
               <button
                 onClick={() => setOcultarNegativos((v) => !v)}
-                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold border transition-colors ${
-                  ocultarNegativos
-                    ? 'bg-slate-700 text-white border-slate-700'
-                    : 'bg-white text-slate-600 border-slate-300 hover:border-slate-400'
-                }`}
+                className="btn-primary gap-2"
               >
-                {ocultarNegativos ? <EyeOff size={12} /> : <Eye size={12} />}
+                {ocultarNegativos ? <EyeOff size={14} /> : <Eye size={14} />}
                 {ocultarNegativos ? 'Mostrar negativos' : 'Ocultar negativos'}
               </button>
               <span className="text-sm text-slate-500">
@@ -251,7 +247,7 @@ export default function LotesNomePage() {
           <div className="flex justify-center pt-2 pb-4">
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
+              className="btn-primary gap-2"
             >
               ↑ Voltar ao topo
             </button>
