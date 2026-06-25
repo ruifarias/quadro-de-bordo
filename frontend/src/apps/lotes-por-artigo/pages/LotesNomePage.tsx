@@ -1,12 +1,13 @@
 import { useState, useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Search, RefreshCw, Package2 } from 'lucide-react'
+import { Search, RefreshCw, Package2, EyeOff, Eye } from 'lucide-react'
 import { getLotesPorNome } from '../api/lotes'
 import { formatCurrency } from '../types'
 import type { ArtigoLotes } from '../types'
 
-function ArtigoCard({ artigo }: { artigo: ArtigoLotes }) {
+function ArtigoCard({ artigo, ocultarNegativos }: { artigo: ArtigoLotes; ocultarNegativos: boolean }) {
   const stockTotal = artigo.lotes.reduce((s, l) => s + l.Qtd_Disponivel, 0)
+  const lotes = ocultarNegativos ? artigo.lotes.filter((l) => l.Qtd_Disponivel > 0) : artigo.lotes
 
   return (
     <div className="card overflow-hidden flex">
@@ -60,7 +61,7 @@ function ArtigoCard({ artigo }: { artigo: ArtigoLotes }) {
           )}
           <div className="ml-auto flex items-center gap-3 shrink-0">
             <span className="text-sm text-slate-500">
-              {artigo.total_lotes} {artigo.total_lotes === 1 ? 'lote' : 'lotes'}
+              {lotes.length} {lotes.length === 1 ? 'lote' : 'lotes'}
             </span>
             <span className="text-sm font-bold text-slate-700">
               Stock:{' '}
@@ -79,7 +80,7 @@ function ArtigoCard({ artigo }: { artigo: ArtigoLotes }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {artigo.lotes.map((lote) => (
+              {lotes.map((lote) => (
                 <tr key={lote.Codigo_Lote} className="hover:bg-slate-50 transition-colors">
                   <td className="px-3 py-0.5 font-mono text-xs text-blue-600 font-bold w-24">
                     {lote.Codigo_Lote}
@@ -110,17 +111,33 @@ function ArtigoCard({ artigo }: { artigo: ArtigoLotes }) {
 
 export default function LotesNomePage() {
   const [termo, setTermo] = useState('')
+  const [marca, setMarca] = useState('')
+  const [cor, setCor] = useState('')
+  const [tamanho, setTamanho] = useState('')
   const [applied, setApplied] = useState('')
+  const [appliedMarca, setAppliedMarca] = useState('')
+  const [appliedCor, setAppliedCor] = useState('')
+  const [appliedTamanho, setAppliedTamanho] = useState('')
+  const [ocultarNegativos, setOcultarNegativos] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const { data, isError, isFetching } = useQuery({
-    queryKey: ['lotes-por-nome', applied],
-    queryFn: () => getLotesPorNome(applied),
+    queryKey: ['lotes-por-nome', applied, appliedMarca, appliedCor, appliedTamanho],
+    queryFn: () => getLotesPorNome(applied, appliedMarca, appliedCor, appliedTamanho),
     enabled: applied.trim() !== '',
   })
 
   const search = () => {
-    if (termo.trim()) setApplied(termo.trim())
+    if (termo.trim()) {
+      setApplied(termo.trim())
+      setAppliedMarca(marca.trim())
+      setAppliedCor(cor.trim())
+      setAppliedTamanho(tamanho.trim())
+    }
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') search()
   }
 
   return (
@@ -138,21 +155,49 @@ export default function LotesNomePage() {
               placeholder="Ex: PUMA, 40956, ténis..."
               value={termo}
               onChange={(e) => setTermo(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  search()
-                  inputRef.current?.select()
-                }
-              }}
+              onKeyDown={handleKeyDown}
+              onClick={(e) => (e.target as HTMLInputElement).select()}
+            />
+          </div>
+          <div>
+            <label className="label">Marca</label>
+            <input
+              type="text"
+              className="input"
+              placeholder="Ex: PUMA, Nike..."
+              value={marca}
+              onChange={(e) => setMarca(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onClick={(e) => (e.target as HTMLInputElement).select()}
+            />
+          </div>
+          <div>
+            <label className="label">Cor</label>
+            <input
+              type="text"
+              className="input"
+              placeholder="Ex: Azul, Preto..."
+              value={cor}
+              onChange={(e) => setCor(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onClick={(e) => (e.target as HTMLInputElement).select()}
+            />
+          </div>
+          <div>
+            <label className="label">Tamanho</label>
+            <input
+              type="text"
+              className="input"
+              placeholder="Ex: 42, M, XL..."
+              value={tamanho}
+              onChange={(e) => setTamanho(e.target.value)}
+              onKeyDown={handleKeyDown}
               onClick={(e) => (e.target as HTMLInputElement).select()}
             />
           </div>
           <button
             className="btn-primary gap-2"
-            onClick={() => {
-              search()
-              inputRef.current?.select()
-            }}
+            onClick={search}
             disabled={isFetching || !termo.trim()}
           >
             <Search size={14} />
@@ -162,6 +207,17 @@ export default function LotesNomePage() {
 
           {data && (
             <div className="flex items-center gap-3 ml-auto">
+              <button
+                onClick={() => setOcultarNegativos((v) => !v)}
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold border transition-colors ${
+                  ocultarNegativos
+                    ? 'bg-slate-700 text-white border-slate-700'
+                    : 'bg-white text-slate-600 border-slate-300 hover:border-slate-400'
+                }`}
+              >
+                {ocultarNegativos ? <EyeOff size={12} /> : <Eye size={12} />}
+                {ocultarNegativos ? 'Mostrar negativos' : 'Ocultar negativos'}
+              </button>
               <span className="text-sm text-slate-500">
                 {data.total_artigos} {data.total_artigos === 1 ? 'artigo' : 'artigos'}
               </span>
@@ -190,8 +246,16 @@ export default function LotesNomePage() {
       {data && data.artigos.length > 0 && (
         <div className="space-y-4">
           {data.artigos.map((artigo) => (
-            <ArtigoCard key={artigo.Codigo_Artigo} artigo={artigo} />
+            <ArtigoCard key={artigo.Codigo_Artigo} artigo={artigo} ocultarNegativos={ocultarNegativos} />
           ))}
+          <div className="flex justify-center pt-2 pb-4">
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
+            >
+              ↑ Voltar ao topo
+            </button>
+          </div>
         </div>
       )}
 

@@ -106,7 +106,7 @@ def _preco_liquido(preco, desconto):
 
 
 @router.get("/por-nome")
-def get_lotes_por_nome(q: str):
+def get_lotes_por_nome(q: str, marca: str = "", cor: str = "", tamanho: str = ""):
     """Procura artigos por código OU descrição (LIKE) e devolve os lotes de
     cada artigo correspondente, agrupados por artigo (só artigos com stock>0)."""
     termo = q.strip()
@@ -174,6 +174,23 @@ def get_lotes_por_nome(q: str):
             })
 
         conn.close()
+
+        # Filtro por Marca em Descritivo_Artigo
+        marca_f = marca.strip().lower()
+        if marca_f:
+            artigos = {cod: a for cod, a in artigos.items() if marca_f in a["Descritivo_Artigo"].lower()}
+
+        # Filtro por Cor/Tamanho em Descricao_Lote: artigo qualifica se tiver
+        # pelo menos um lote com stock>0 que satisfaça ambos; mostra todos os lotes
+        cor_f = cor.strip().lower()
+        tam_f = tamanho.strip().lower()
+        if cor_f or tam_f:
+            def lote_qualifica(lote):
+                if lote["Qtd_Disponivel"] <= 0:
+                    return False
+                desc = (lote["Descricao_Lote"] or "").lower()
+                return (not cor_f or cor_f in desc) and (not tam_f or tam_f in desc)
+            artigos = {cod: a for cod, a in artigos.items() if any(lote_qualifica(l) for l in a["lotes"])}
 
         # Só artigos com stock total > 0 (mantém todos os lotes, incluindo negativos)
         validos = [
