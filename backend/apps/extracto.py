@@ -95,6 +95,18 @@ def get_nota_pagamento(ano: int, numero_pagamento: str, codigo_conta: str):
     except Exception as e:
         return {"error": str(e)}
 
+@router.get("/cheques-predatados")
+def get_cheques_predatados(codigo_conta: str):
+    """Obter cheques pré-datados não conciliados de um fornecedor"""
+    try:
+        # Extrair código de entidade (fornecedor) dos últimos 4 dígitos da conta
+        codigo_entidade = codigo_conta.split(".")[-1] if "." in codigo_conta else codigo_conta[-4:]
+
+        cheques = db.get_cheques_predatados(codigo_entidade)
+        return {"cheques": cheques}
+    except Exception as e:
+        return {"error": str(e)}
+
 @router.post("/extracto")
 def get_extracto(request: ExtractoRequest):
     """Gerar extracto de conta corrente"""

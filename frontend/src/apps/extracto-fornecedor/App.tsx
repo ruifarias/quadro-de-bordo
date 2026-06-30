@@ -29,6 +29,19 @@ interface ExtractoItem {
   por_regularizar?: boolean
 }
 
+interface Cheque {
+  codigo_entidade: string
+  data_emissao?: string
+  data_vencimento?: string
+  data_documento?: string
+  numero_documento?: string
+  valor: number
+  entidade_sacada?: string
+  local_emissao?: string
+  numero_movimento_caixa?: string
+  codigo_movimento_caixa?: string
+}
+
 function ExtractoFornecedor() {
   const [contas, setContas] = useState<Conta[]>([])
   const [codigoConta, setCodigoConta] = useState('')
@@ -38,6 +51,7 @@ function ExtractoFornecedor() {
   const [extracto, setExtracto] = useState<ExtractoItem[]>([])
   const [saldoInicial, setSaldoInicial] = useState<any>(null)
   const [documentosPorRegularizar, setDocumentosPorRegularizar] = useState<any[]>([])
+  const [chequesPredatados, setChequesPredatados] = useState<Cheque[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [descricaoContaSelecionada, setDescricaoContaSelecionada] = useState('')
@@ -79,6 +93,17 @@ function ExtractoFornecedor() {
       setSaldoInicial(response.data.saldo_inicial)
       setExtracto(response.data.extracto_completo || [])
       setDocumentosPorRegularizar(response.data.documentos_por_regularizar || [])
+
+      // Buscar cheques pré-datados
+      try {
+        const chequesResponse = await axios.get('/api/extracto/cheques-predatados', {
+          params: { codigo_conta: codigoConta }
+        })
+        setChequesPredatados(chequesResponse.data.cheques || [])
+      } catch (chequesErr) {
+        console.error('Erro ao buscar cheques:', chequesErr)
+        setChequesPredatados([])
+      }
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Erro ao gerar extracto')
     } finally {
@@ -175,7 +200,7 @@ function ExtractoFornecedor() {
       const totalPorRegularizar = docsReg.reduce((acc: number, d: any) => acc + (d.valor_por_regularizar || 0), 0)
       const linhasReg = docsReg.map((d: any) => {
         const venc = new Date(d.data_vencimento || '')
-        const vencido = venc < hoje && (d.valor_por_regularizar || 0) > 0
+        const vencido = venc < hoje && Math.abs(d.valor_por_regularizar || 0) > 0
         const valorPago = (d.valor_documento || 0) - (d.valor_por_regularizar || 0)
         return `
         <tr class="${vencido ? 'row-vencido' : ''}">
@@ -553,10 +578,14 @@ function ExtractoFornecedor() {
               </tr>
             </thead>
             <tbody>
-              {extracto.map((item, idx) => (
+              {extracto.map((item, idx) => {
+                const numerosChequesSet = new Set(chequesPredatados.map(c => String(c.numero_documento || '').trim()))
+                const isChequePredatado = numerosChequesSet.has(String(item.numero_documento || '').trim())
+
+                return (
                 <tr
                   key={idx}
-                  className={`${item.tipo === 'saldo_inicial' ? 'saldo-inicial-row' : ''} ${item.tipo === 'documento_pagamento' ? 'documento-pagamento-row' : ''} ${item.tipo === 'saldo_final' ? 'saldo-final-row' : ''} ${item.por_regularizar ? 'documento-por-regularizar' : ''}`}
+                  className={`${item.tipo === 'saldo_inicial' ? 'saldo-inicial-row' : ''} ${item.tipo === 'documento_pagamento' ? 'documento-pagamento-row' : ''} ${item.tipo === 'saldo_final' ? 'saldo-final-row' : ''} ${item.por_regularizar ? 'documento-por-regularizar' : ''} ${isChequePredatado ? 'cheque-predatado-row' : ''}`}
                 >
                   <td>{item.tipo === 'saldo_final' ? '' : formatDate(item.data_hora || item.data || '')}</td>
                   <td>
@@ -637,7 +666,8 @@ function ExtractoFornecedor() {
                   </td>
                   <td className="saldo-acumulado">{item.tipo === 'documento_pagamento' || item.tipo === 'saldo_final' ? (item.tipo === 'saldo_final' ? formatCurrency(item.saldo_acumulado) : '-') : formatCurrency(item.saldo_acumulado)}</td>
                 </tr>
-              ))}
+                )
+              })}
             </tbody>
           </table>
         </div>
@@ -676,7 +706,7 @@ function ExtractoFornecedor() {
 
                       const data_vencimento = new Date(doc.data_vencimento || '')
                       const hoje = new Date()
-                      const vencido = data_vencimento < hoje && (doc.valor_por_regularizar || 0) > 0
+                      const vencido = data_vencimento < hoje && Math.abs(doc.valor_por_regularizar || 0) > 0
 
                       return (
                         <tr key={idx} className={`documento-regularizar-row ${vencido ? 'documento-vencido' : ''}`}>
@@ -739,6 +769,47 @@ function ExtractoFornecedor() {
                           <td className="valor-coluna">{formatCurrency(valor_pago)}</td>
                           <td className="saldo-pendente valor-coluna">{formatCurrency(doc.valor_por_regularizar || 0)}</td>
                           <td className="saldo-acumulado valor-coluna">{formatCurrency(saldo_acumulado)}</td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {chequesPredatados.length > 0 && (
+              <div className="cheques-predatados-section">
+                <h3>Cheques Pré-Datados em Aberto</h3>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Data Vencimento</th>
+                      <th>Data Emissão</th>
+                      <th>Pagamento Nº</th>
+                      <th>Cheque Pré-datado Nº</th>
+                      <th>Entidade Sacada</th>
+                      <th>Local Emissão</th>
+                      <th>Valor</th>
+                      <th>Acumulado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {chequesPredatados.map((cheque, idx) => {
+                      const chequeNum = `${cheque.codigo_movimento_caixa || ''} ${cheque.numero_movimento_caixa || ''}`.trim()
+                      const saldo_acumulado = chequesPredatados
+                        .slice(0, idx + 1)
+                        .reduce((acc, c) => acc + (c.valor || 0), 0)
+
+                      return (
+                        <tr key={idx} className="cheque-row">
+                          <td>{formatDate(cheque.data_emissao || '')}</td>
+                          <td>{formatDate(cheque.data_vencimento || '')}</td>
+                          <td>{cheque.numero_documento || '-'}</td>
+                          <td className="numero-cheque">{chequeNum || '-'}</td>
+                          <td>{cheque.entidade_sacada || '-'}</td>
+                          <td>{cheque.local_emissao || '-'}</td>
+                          <td className="valor-coluna">{formatCurrency(-(cheque.valor || 0))}</td>
+                          <td className="saldo-acumulado valor-coluna">{formatCurrency(-saldo_acumulado)}</td>
                         </tr>
                       )
                     })}
