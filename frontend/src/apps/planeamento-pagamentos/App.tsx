@@ -57,6 +57,8 @@ function App() {
   const [summary, setSummary] = useState<SummaryData | null>(null)
   const [weekColumns, setWeekColumns] = useState<string[]>([])
   const [totalVencido, setTotalVencido] = useState<number>(0)
+  const [cheques, setCheques] = useState<any[]>([])
+  const [totalCheques, setTotalCheques] = useState<number>(0)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,6 +71,11 @@ function App() {
 
         // Total vencido calculado no backend (faturas com data de vencimento <= hoje)
         setTotalVencido(response.data.total_vencido || 0)
+
+        // Buscar cheques pré-datados
+        const chequesResponse = await axios.get('/api/planeamento/cheques-predatados')
+        setCheques(chequesResponse.data.cheques)
+        setTotalCheques(chequesResponse.data.total_geral || 0)
 
         const summaryResponse = await axios.get<SummaryData>('/api/planeamento/resumo')
         setSummary(summaryResponse.data)
@@ -165,6 +172,66 @@ function App() {
     </>
   )
 
+  const renderChequesTable = () => (
+    <>
+      <div className="table-title">FORNECEDORES - CHEQUES PRÉ-DATADOS</div>
+      <table className="pagamentos-table">
+        <thead>
+          <tr>
+            <th className="col-forn">Forn. Nº</th>
+            <th className="col-nome">Cheque Pré-Datado Nº - Data</th>
+            {weekColumns.map((col) => (
+              <th key={col} className="col-semana">
+                {formatWeekLabel(col)}
+              </th>
+            ))}
+            <th className="col-total">Total em Dívida</th>
+          </tr>
+        </thead>
+        <tbody>
+          {cheques.map((cheque, idx) => (
+            <tr key={idx}>
+              <td className="col-forn"><strong>{cheque.codigo_entidade}</strong></td>
+              <td className="col-nome">{cheque.numero_documento} {formatDate(new Date(cheque.data_emissao))}</td>
+              {weekColumns.map((week) => {
+                const isWeekMatch = cheque.semana === week.replace('semana_', '')
+                const valor = isWeekMatch ? cheque.valor : 0
+                return (
+                  <td key={week} className="col-semana text-right">
+                    {valor > 0 ? formatCurrency(valor) : '-'}
+                  </td>
+                )
+              })}
+              <td className="col-total text-right">
+                <strong>{formatCurrency(cheque.valor)}</strong>
+              </td>
+            </tr>
+          ))}
+          <tr className="totals-row">
+            <td colSpan={2} className="col-total"><strong>TOTAL</strong></td>
+            {weekColumns.map((week) => {
+              const weekKey = week.replace('semana_', '')
+              const total = cheques.reduce((acc, cheque) => {
+                if (cheque.semana === weekKey) {
+                  return acc + cheque.valor
+                }
+                return acc
+              }, 0)
+              return (
+                <td key={week} className="col-semana text-right">
+                  <strong>{total > 0 ? formatCurrency(total) : '-'}</strong>
+                </td>
+              )
+            })}
+            <td className="col-total text-right">
+              <strong>{formatCurrency(totalCheques)}</strong>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </>
+  )
+
   return (
     <div className="pagamentos-container">
       <header className="pagamentos-header">
@@ -185,6 +252,7 @@ function App() {
         {renderTable(fornecedoresTransferenciaComDivida, 'FORNECEDORES - TRANSFERÊNCIA BANCÁRIA')}
         {renderTable(fornecedoresDebito, 'FORNECEDORES - DÉBITO DIRECTO')}
         {renderTable(fornecedoresTransferenciaComCredito, 'FORNECEDORES - COM CRÉDITOS')}
+        {cheques.length > 0 && renderChequesTable()}
       </div>
     </div>
   )

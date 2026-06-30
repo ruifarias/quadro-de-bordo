@@ -71,3 +71,13 @@ async def get_pagamentos_resumo():
         "wednesdays": data.get("wednesdays", []),
         "semanas": data.get("semanas", [])
     }
+
+@router.get("/cheques-predatados")
+async def get_cheques_predatados():
+    """Retorna cheques pré-datados para planeamento"""
+    cheques, total_geral = db.get_cheques_predatados_por_semana()
+
+    return {
+        "cheques": cheques,
+        "total_geral": total_geral
+    }
